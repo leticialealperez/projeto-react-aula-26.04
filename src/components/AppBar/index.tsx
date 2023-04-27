@@ -52,7 +52,7 @@ const ResponsiveAppBar: React.FC = () => {
 		<AppBar position="fixed" sx={{ height: '30vh' }}>
 			<Container maxWidth="xl" component="header">
 				<Toolbar disableGutters>
-					{/* DAQUI PRA BAIXO É O LAYOUT NAS TELAS XS ATÉ SM PRA CIMA */}
+					{/* DAQUI PRA BAIXO É O LAYOUT NAS TELAS XS ATÉ SM */}
 					<Adb sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
 					<Typography
 						variant="h6" // gera o estilo
