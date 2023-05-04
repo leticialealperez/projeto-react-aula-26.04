@@ -1,10 +1,8 @@
-import { Add } from '@mui/icons-material';
-import { Fab, Grid } from '@mui/material';
-import React, { useState } from 'react';
+import { Grid } from '@mui/material';
+import React, { useMemo, useState } from 'react';
 
 import ResponsiveAppBar from '../../components/AppBar';
 import MyCard from '../../components/Card';
-import Modal from '../../components/Modal';
 import { Contato } from '../../types';
 
 const dataMock: Contato[] = [
@@ -31,10 +29,21 @@ const dataMock: Contato[] = [
 	},
 ];
 
-const Welcome: React.FC = () => {
-	const [open, setOpen] = useState(false);
+interface WelcomeProps {
+	modo: 'login' | 'cadastro';
+}
+
+const Welcome: React.FC<WelcomeProps> = ({ modo }) => {
 	const [listaContatos, setListaContatos] = useState<Contato[]>(dataMock);
 
+	const formMemo = useMemo(() => {
+		switch (modo) {
+			case 'login':
+				return <></>; // textfield login
+			case 'cadastro':
+				return <></>; // textfield cadastro
+		}
+	}, [modo]);
 	return (
 		<>
 			<ResponsiveAppBar />
@@ -47,23 +56,9 @@ const Welcome: React.FC = () => {
 						/>
 					</Grid>
 				))}
+
+				{formMemo}
 			</Grid>
-
-			<Fab
-				color="primary"
-				aria-label="add"
-				sx={{ position: 'fixed', right: '30px', bottom: '30px' }}
-				onClick={() => setOpen(true)}
-			>
-				<Add />
-			</Fab>
-
-			<Modal
-				aberto={open}
-				contexto="create"
-				fecharModal={() => setOpen(false)}
-				funcaoModificadora={setListaContatos}
-			/>
 		</>
 	);
 };

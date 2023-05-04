@@ -49,7 +49,7 @@ const ResponsiveAppBar: React.FC = () => {
 	};
 
 	return (
-		<AppBar position="fixed" sx={{ height: '30vh' }}>
+		<AppBar position="static" color="primary">
 			<Container maxWidth="xl" component="header">
 				<Toolbar disableGutters>
 					{/* DAQUI PRA BAIXO É O LAYOUT NAS TELAS XS ATÉ SM */}
