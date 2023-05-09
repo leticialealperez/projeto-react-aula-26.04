@@ -9,46 +9,28 @@ import {
 } from '@mui/material';
 import React, { useState } from 'react';
 
+import { useAppDispatch } from '../../store/hooks';
+import { atualizar } from '../../store/modules/Contacts/contatosSlice';
 import { Contato, Contexto } from '../../types';
 import Modal from '../Modal';
 
 interface MyCardProps {
 	contato: Contato;
-	funcaoModificadoraDoEstadoLocal: React.Dispatch<
-		React.SetStateAction<Contato[]>
-	>;
 }
 
-const MyCard: React.FC<MyCardProps> = ({
-	contato,
-	funcaoModificadoraDoEstadoLocal,
-}) => {
+const MyCard: React.FC<MyCardProps> = ({ contato }) => {
 	const [open, setOpen] = useState(false);
 	const [contexto, setContexto] = useState<Contexto>('create');
+
+	const dispatch = useAppDispatch();
+
 	const handleFavorite = () => {
-		funcaoModificadoraDoEstadoLocal((prev) => {
-			// const listaAntigaAux = [...prev];
-
-			// listaAntigaAux.forEach((item) => {
-			// 	if (item.email === contato.email) {
-			// 		item.favorito = !item.favorito;
-			// 	}
-			// });
-
-			// return listaAntigaAux;
-			return prev.map((item) => {
-				if (item.email === contato.email) {
-					return {
-						...item,
-						favorito: !item.favorito,
-					};
-				}
-
-				return item;
-			});
-
-			// return copiaLista;
-		});
+		dispatch(
+			atualizar({
+				id: contato.email,
+				changes: { favorito: !contato.favorito },
+			}),
+		);
 	};
 
 	const handleClick = (context: Contexto) => {
@@ -98,7 +80,6 @@ const MyCard: React.FC<MyCardProps> = ({
 				aberto={open}
 				contexto={contexto}
 				fecharModal={() => setOpen(false)}
-				funcaoModificadora={funcaoModificadoraDoEstadoLocal}
 				contato={contato}
 			/>
 		</>

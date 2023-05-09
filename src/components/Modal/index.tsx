@@ -11,13 +11,18 @@ import {
 } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import {
+	adicionar,
+	atualizar,
+	deletar,
+} from '../../store/modules/Contacts/contatosSlice';
 import { Contato, Contexto } from '../../types';
 
 interface ModalProps {
 	contexto: Contexto;
 	aberto: boolean;
 	fecharModal: () => void;
-	funcaoModificadora: React.Dispatch<React.SetStateAction<Contato[]>>;
 	contato?: Contato;
 }
 
@@ -25,12 +30,14 @@ const Modal: React.FC<ModalProps> = ({
 	aberto,
 	contexto,
 	fecharModal,
-	funcaoModificadora,
 	contato,
 }) => {
 	const [nome, setNome] = useState('');
 	const [telefone, setTelefone] = useState('');
 	const [email, setEmail] = useState('');
+
+	const user = useAppSelector((state) => state.user);
+	const dispatch = useAppDispatch();
 
 	useEffect(() => {
 		if (contexto === 'update' && contato) {
@@ -51,39 +58,28 @@ const Modal: React.FC<ModalProps> = ({
 					criadoEm: new Date().toLocaleDateString('pt-Br', {
 						dateStyle: 'long',
 					}),
+					criadoPor: user.email,
 				};
-				funcaoModificadora((prev) => [...prev, novoContato]);
+				dispatch(adicionar(novoContato));
+
 				break;
 
 			case 'delete':
-				funcaoModificadora((prev) => {
-					if (contato) {
-						return prev.filter(
-							(item) => item.email !== contato.email,
-						);
-					}
-
-					return prev;
-				});
+				if (contato) {
+					dispatch(deletar(contato.email));
+				}
 
 				break;
 
 			case 'update':
-				// atualiza um determinado item da lista
-				funcaoModificadora((prev) => {
-					return prev.map((item) => {
-						if (contato && contato.email === item.email) {
-							return {
-								...item,
-								nome,
-								telefone,
-								email,
-							};
-						}
-
-						return item;
-					});
-				});
+				if (contato) {
+					dispatch(
+						atualizar({
+							id: contato.email,
+							changes: { nome, email, telefone },
+						}),
+					);
+				}
 				break;
 			default:
 		}

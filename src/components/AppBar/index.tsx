@@ -14,22 +14,23 @@ import {
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import { removeUser, selectUser } from '../../store/modules/User/userSlice';
+
 const pages = [
 	{ label: 'Products', url: '/products' },
 	{ label: 'Pricing', url: '/pricing' },
 	{ label: 'Blog', url: '/blog' },
 ];
-const settings = [
-	{ label: 'Profile', url: '/profile' },
-	{ label: 'Account', url: '/account' },
-	{ label: 'Dashboard', url: '/dashboard' },
-	{ label: 'Logout', url: '/singin' },
-];
+
+const settings = [{ label: 'Logout', url: '/' }];
 
 const ResponsiveAppBar: React.FC = () => {
 	const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
 	const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
 
+	const user = useAppSelector(selectUser);
+	const dispatch = useAppDispatch();
 	const navigate = useNavigate();
 
 	const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
@@ -165,7 +166,7 @@ const ResponsiveAppBar: React.FC = () => {
 								sx={{ p: 0 }}
 							>
 								<Avatar
-									alt={'joao@teste.com'.toUpperCase()} // usuario Logado - [J]oao@teste.com
+									alt={user.email.toUpperCase()} // usuario Logado - [J]oao@teste.com
 									src="/assets/images/img.jpg"
 								/>
 							</IconButton>
@@ -191,6 +192,7 @@ const ResponsiveAppBar: React.FC = () => {
 									key={setting.label}
 									onClick={() => {
 										handleCloseUserMenu();
+										dispatch(removeUser());
 										navigate(setting.url);
 									}}
 								>
